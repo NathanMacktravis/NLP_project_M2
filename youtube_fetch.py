@@ -1,6 +1,7 @@
 from googleapiclient.discovery import build
 from youtube_transcript_api import YouTubeTranscriptApi
 import pprint
+import requests
 
 API_KEY = "AIzaSyCVRrhke_FTaC7gtTJdpj-UL4HJPRuRU5g"
 
@@ -79,6 +80,23 @@ def video_transcript(video_id):
         return f"retrieve transcript for this video is impossible"
 
 
+def video_transcript_v2(lang, video_id):
+
+    url = f"http://video.google.com/timedtext?lang={lang}&v={video_id}"
+
+    try:
+        response = requests.get(url)
+        if response.status_code == 200:
+            print(response.content)
+            return response.text
+        else:
+            print(f"Error: {response.status_code}")
+            return None
+    except Exception as e:
+        print(f"Transcript Error: {e}")
+        return None
+
+
 def filter_channels_by_keyword(channels, keyword):
     return [channel for channel in channels if re.search(keyword, channel['description'], re.IGNORECASE)]
 
@@ -117,7 +135,9 @@ def main():
             print(f"Sentiment Score: {sentiment_score}")
 
 if __name__ == "__main__":
-    main()
+    #main()
+    print(video_transcript('W_ba-3tRjSA'))
+    #print(video_transcript_v2('en', 'W_ba-3tRjSA'))
 
 """channels = search_channels('history')
 pprint.pprint(channels)"""
